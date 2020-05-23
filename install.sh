@@ -5,7 +5,7 @@ apt-get install -y nut smartmontools
 
 echo "NOTE: if ZFS is not installed or configured then crontab should be modified after install"
 
-sudo cp -Rav rootfs/* /\
+sudo cp -Rav rootfs/* /
 
 cat << EOF >> /var/spool/cron/crontabs/$(whoami)
 # Run SMART - short disk check every 12 hours
