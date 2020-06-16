@@ -13,3 +13,7 @@ make
 nohup /opt/watchdog/bin/watchdog >> /var/log/watchdog.log 2>&1 &
 tail -f /var/log/watchdog.log
 ```
+
+### Run At Startup
+
+Add or edit your `/etc/rc.local` and add the `nohup` command above to it. If not running on a Debian-based distro please check your distro's man pages for best practicies. 
