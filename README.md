@@ -1,6 +1,6 @@
 # watchdog
 
-Automatically monitor and report on health of disks, ZFS clusters, and UPS hardware.
+Automatically monitor and report on health of disks, ZFS clusters, and UPS hardware to maintain your physical server.
 
 ## Getting Started
 
