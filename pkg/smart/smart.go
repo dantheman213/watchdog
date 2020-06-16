@@ -37,7 +37,7 @@ func getDisks() (*[]string, error) {
 
 func startDaily() {
     for true {
-        fmt.Println("S.M.A.R.T Daily Scan Scheduler activating...")
+        fmt.Println("S.M.A.R.T Daily Scan Scheduler has activated...")
 
         now := time.Now()
         future := now.AddDate(0, 0, 1)
@@ -54,7 +54,7 @@ func startDaily() {
 
 func startWeekly() {
     for true {
-        fmt.Println("S.M.A.R.T Weekly Scan Scheduler activating...")
+        fmt.Println("S.M.A.R.T Weekly Scan Scheduler has activated...")
         now := time.Now()
         target := common.CalculateEndDate(now, time.Sunday)
         delta := now.Sub(target)

@@ -18,7 +18,14 @@ func Start() {
 
 func startWeekly() {
     for true {
+        fmt.Println("ZFS Weekly Scrub Scheduler has activated...")
+        now := time.Now()
+        target := common.CalculateEndDate(now, time.Wednesday)
+        delta := now.Sub(target)
 
+        sleepSecs := math.Abs(delta.Seconds())
+        fmt.Printf("Sleeping until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
+        time.Sleep(time.Duration(sleepSecs) * time.Second)
 
         stdout, _, err := cli.RunCommand(`/usr/sbin/zpool list | sed -n '1d;p' | awk '{print $1}'`)
         if err != nil {
@@ -41,15 +48,5 @@ func startWeekly() {
                 fmt.Printf("Started ZFS scrub successfully on %s", pool)
             }
         }
-
-
-        fmt.Println("ZFS Weekly Scan Scheduler activating...")
-        now := time.Now()
-        target := common.CalculateEndDate(now, time.Wednesday)
-        delta := now.Sub(target)
-
-        sleepSecs := math.Abs(delta.Seconds())
-        fmt.Printf("Sleeping until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
-        time.Sleep(time.Duration(sleepSecs) * time.Second)
     }
 }
