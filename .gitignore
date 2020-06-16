@@ -1,6 +1,7 @@
 .DS_Store
 [Tt]humbs.db
 
+*.log
 .idea/
 
-*.log
+/bin
