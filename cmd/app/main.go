@@ -1,9 +1,9 @@
 package main
 
 import (
-    "fmt"
     "github.com/dantheman213/watchdog/pkg/smart"
     "github.com/dantheman213/watchdog/pkg/zfs"
+    "log"
 )
 
 var quit = make(chan struct{})

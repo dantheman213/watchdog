@@ -4,4 +4,8 @@ Automatically monitor and report on health of disks, ZFS clusters, and UPS hardw
 
 ## Getting Started
 
-TODO
+Run locally in the background
+
+```
+nohup /opt/watchdog/bin/watchdog >> /var/log/watchdog.log 2>&1 &
+```

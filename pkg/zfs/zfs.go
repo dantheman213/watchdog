@@ -5,6 +5,7 @@ import (
     "fmt"
     "github.com/dantheman213/watchdog/pkg/cli"
     "github.com/dantheman213/watchdog/pkg/common"
+    "log"
     "math"
     "strings"
     "time"
