@@ -4,8 +4,12 @@ Automatically conduct, monitor, and report on health of disks, ZFS clusters, and
 
 ## Getting Started
 
-Run locally in the background
+Download, compile, and run on your server:
 
 ```
+git clone https://github.com/dantheman213/watchdog /opt/watchdog
+cd /opt/watchdog
+make
 nohup /opt/watchdog/bin/watchdog >> /var/log/watchdog.log 2>&1 &
+tail -f /var/log/watchdog.log
 ```
