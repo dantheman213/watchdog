@@ -12,7 +12,7 @@ import (
 )
 
 func Start() {
-    fmt.Println("Starting S.M.A.R.T Scheduler Daemon...")
+    log.Print("Starting S.M.A.R.T Scheduler Daemon...")
 
     go startDaily()
     go startWeekly()
@@ -23,7 +23,7 @@ func getDisks() (*[]string, error) {
 
     stdout, _, err := cli.RunCommand(`/sbin/fdisk -l | grep Disk | grep -e /dev/nvme -e /dev/sd -e /dev/hd | awk '{print $2}' | sed 's/.$//'`)
     if err != nil {
-        fmt.Println("ERROR: could not get disks...")
+        log.Println("ERROR: could not get disks...")
         return nil, err
     }
 
@@ -37,7 +37,7 @@ func getDisks() (*[]string, error) {
 
 func startDaily() {
     for true {
-        fmt.Println("S.M.A.R.T Daily Scan Scheduler has activated...")
+        log.Println("S.M.A.R.T Daily Scan Scheduler has activated...")
 
         now := time.Now()
         future := now.AddDate(0, 0, 1)
@@ -45,7 +45,7 @@ func startDaily() {
         delta := now.Sub(target)
 
         sleepSecs := math.Abs(delta.Seconds())
-        fmt.Printf("Sleeping until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
+        log.Printf("Sleeping until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
         time.Sleep(time.Duration(sleepSecs) * time.Second)
 
         testAllDisks("short")
@@ -54,13 +54,13 @@ func startDaily() {
 
 func startWeekly() {
     for true {
-        fmt.Println("S.M.A.R.T Weekly Scan Scheduler has activated...")
+        log.Println("S.M.A.R.T Weekly Scan Scheduler has activated...")
         now := time.Now()
         target := common.CalculateEndDate(now, time.Sunday)
         delta := now.Sub(target)
 
         sleepSecs := math.Abs(delta.Seconds())
-        fmt.Printf("Sleeping until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
+        log.Printf("Sleeping until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
         time.Sleep(time.Duration(sleepSecs) * time.Second)
 
         testAllDisks("long")
@@ -69,7 +69,7 @@ func startWeekly() {
 
 // duration = (short, long)
 func testAllDisks(duration string) {
-    fmt.Printf("Starting '%s' type test for all disks...\n", duration)
+    log.Printf("Starting '%s' type test for all disks...\n", duration)
 
     disks, err := getDisks()
     if err != nil {
@@ -77,12 +77,12 @@ func testAllDisks(duration string) {
     }
 
     for _, disk := range *disks {
-        fmt.Printf("Starting S.M.A.R.T. %s test on disk %s\n", duration, disk)
+        log.Printf("Starting S.M.A.R.T. %s test on disk %s\n", duration, disk)
         _, _, err := cli.RunCommand(fmt.Sprintf("/usr/sbin/smartctl -t %s %s", duration, disk))
         if err != nil {
-            fmt.Printf("Could not start S.M.A.R.T. test on disk %s. Received ERROR: %s\n", disk, err)
+            log.Printf("Could not start S.M.A.R.T. test on disk %s. Received ERROR: %s\n", disk, err)
         } else {
-            fmt.Printf("Started %s disk test successfully on %s", duration, disk)
+            log.Printf("Started %s disk test successfully on %s", duration, disk)
         }
     }
 }

@@ -9,7 +9,7 @@ import (
 var quit = make(chan struct{})
 
 func main() {
-    fmt.Println("Starting Watchdog...")
+    log.Println("Starting Watchdog...")
 
     smart.Start()
     zfs.Start()
