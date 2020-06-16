@@ -7,6 +7,7 @@ import (
     "github.com/dantheman213/watchdog/pkg/common"
     "log"
     "math"
+    "strings"
     "time"
 )
 
@@ -28,7 +29,7 @@ func getDisks() (*[]string, error) {
 
     scanner := bufio.NewScanner(&stdout)
     for scanner.Scan() {
-        disks = append(disks, scanner.Text())
+        disks = append(disks, strings.TrimSpace(scanner.Text()))
     }
 
     return &disks, nil
@@ -37,16 +38,17 @@ func getDisks() (*[]string, error) {
 func startDaily() {
     for true {
         fmt.Println("S.M.A.R.T Daily Scan Scheduler activating...")
-        //now := time.Now()
-        //future := now.AddDate(0, 0, 1)
-        //target := time.Date(future.Year(), future.Month(), future.Day(), 0, 0, 0, 0, time.Local)
-        //delta := now.Sub(target)
-        //
-        //sleepSecs := math.Abs(delta.Seconds())
-        //fmt.Printf("Sleeping until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
-        //time.Sleep(time.Duration(sleepSecs) * time.Second)
 
-        startTests("short")
+        now := time.Now()
+        future := now.AddDate(0, 0, 1)
+        target := time.Date(future.Year(), future.Month(), future.Day(), 0, 0, 0, 0, time.Local)
+        delta := now.Sub(target)
+
+        sleepSecs := math.Abs(delta.Seconds())
+        fmt.Printf("Sleeping until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
+        time.Sleep(time.Duration(sleepSecs) * time.Second)
+
+        testAllDisks("short")
     }
 }
 
@@ -61,12 +63,12 @@ func startWeekly() {
         fmt.Printf("Sleeping until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
         time.Sleep(time.Duration(sleepSecs) * time.Second)
 
-        startTests("long")
+        testAllDisks("long")
     }
 }
 
 // duration = (short, long)
-func startTests(duration string) {
+func testAllDisks(duration string) {
     fmt.Printf("Starting '%s' type test for all disks...\n", duration)
 
     disks, err := getDisks()
@@ -75,9 +77,12 @@ func startTests(duration string) {
     }
 
     for _, disk := range *disks {
-        _, _, err := cli.RunCommand(fmt.Sprintf("/sbin/smartctl -t %s %s\n", duration, disk))
+        fmt.Printf("Starting S.M.A.R.T. %s test on disk %s\n", duration, disk)
+        _, _, err := cli.RunCommand(fmt.Sprintf("/usr/sbin/smartctl -t %s %s", duration, disk))
         if err != nil {
-            log.Fatal(err)
+            fmt.Printf("Could not start S.M.A.R.T. test on disk %s. Received ERROR: %s\n", disk, err)
+        } else {
+            fmt.Printf("Started %s disk test successfully on %s", duration, disk)
         }
     }
 }
