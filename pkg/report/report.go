@@ -65,7 +65,9 @@ func generateReports() {
         report += fmt.Sprintf("\n\nDisk Path: %s\n", disk)
         o, _, err := cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -i %s | grep -e SMART -e Available -e "Model Family" -e "Device Model" -e "Serial Number"`, disk))
         if err != nil {
-            log.Fatal(err)
+            log.Println(err)
+            report += fmt.Sprintf("\n%s\n", err)
+            continue
         }
 
         scanner := bufio.NewScanner(&o)
@@ -75,7 +77,9 @@ func generateReports() {
 
         o, _, err = cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -a %s | grep -e "test result" -e " PASS" -e " FAIL"`, disk))
         if err != nil {
-            log.Fatal(err)
+            log.Println(err)
+            report += fmt.Sprintf("\n%s\n", err)
+            continue
         }
 
         scanner = bufio.NewScanner(&o)
@@ -85,7 +89,9 @@ func generateReports() {
 
         o, _, err = cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -l selftest %s | grep -A 5 "=== START OF READ SMART DATA SECTION ==="`, disk))
         if err != nil {
-            log.Fatal(err)
+            log.Println(err)
+            report += fmt.Sprintf("\n%s\n", err)
+            continue
         }
 
         scanner = bufio.NewScanner(&o)
