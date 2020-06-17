@@ -7,7 +7,9 @@ import (
     "github.com/dantheman213/watchdog/pkg/common"
     "github.com/dantheman213/watchdog/pkg/config"
     "log"
+    "math"
     "strings"
+    "time"
 )
 
 // Example SMART report
@@ -25,7 +27,28 @@ import (
 // # 2  Short offline       Completed without error       00%      480         -
 // # 3  Short offline       Completed without error       00%      460         -
 
-func GetSMARTReports() {
+func Start() {
+    log.Print("Starting Report Scheduler Daemon...")
+
+    go startWeekly()
+}
+
+func startWeekly() {
+    for true {
+        log.Println("Report Weekly Scheduler timer has activated...")
+        now := time.Now()
+        target := common.CalculateEndDate(now, time.Saturday)
+        delta := now.Sub(target)
+
+        sleepSecs := math.Abs(delta.Seconds())
+        log.Printf("Sleeping until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
+        time.Sleep(time.Duration(sleepSecs) * time.Second)
+
+        getSMARTReports()
+    }
+}
+
+func getSMARTReports() {
     report := ""
 
     disks, err := common.GetDisks()

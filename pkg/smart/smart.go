@@ -18,7 +18,7 @@ func Start() {
 
 func startDaily() {
     for true {
-        log.Println("S.M.A.R.T Daily Scan Scheduler has activated...")
+        log.Println("S.M.A.R.T Daily Scan Scheduler timer has activated...")
 
         now := time.Now()
         future := now.AddDate(0, 0, 1)
@@ -35,7 +35,7 @@ func startDaily() {
 
 func startWeekly() {
     for true {
-        log.Println("S.M.A.R.T Weekly Scan Scheduler has activated...")
+        log.Println("S.M.A.R.T Weekly Scan Scheduler timer has activated...")
         now := time.Now()
         target := common.CalculateEndDate(now, time.Sunday)
         delta := now.Sub(target)
