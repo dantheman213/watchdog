@@ -7,6 +7,7 @@ import (
     "github.com/dantheman213/watchdog/pkg/common"
     "github.com/dantheman213/watchdog/pkg/config"
     "log"
+    "math"
     "strings"
     "time"
 )
@@ -36,17 +37,15 @@ func startWeekly() {
     for true {
         log.Println("Report Weekly Scheduler timer has activated...")
 
-        // TODO: fix
-        //now := time.Now()
-        //target := common.CalculateEndDate(now, time.Saturday)
-        //delta := now.Sub(target)
-        //
-        //sleepSecs := math.Abs(delta.Seconds())
-        //log.Printf("Sleeping until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
-        //time.Sleep(time.Duration(sleepSecs) * time.Second)
+        now := time.Now()
+        target := common.CalculateEndDate(now, time.Saturday)
+        delta := now.Sub(target)
+
+        sleepSecs := math.Abs(delta.Seconds())
+        log.Printf("Sleeping until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
+        time.Sleep(time.Duration(sleepSecs) * time.Second)
 
         generateReports()
-        time.Sleep(time.Duration(999) * time.Second)
     }
 }
 
