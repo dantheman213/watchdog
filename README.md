@@ -12,7 +12,7 @@ Automatically conduct, monitor, and report on health of disks, ZFS clusters, and
 
 * [IN PROGRESS] Check and report on UPS activations or failures.
 
-* [IN PROGRESS] Send email to configured inbox on regular interval to provide server status.
+* Generate reports and have it sent to you via email every Saturday.
 
 ## Getting Started
 
