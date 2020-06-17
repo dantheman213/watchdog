@@ -1,13 +1,11 @@
 package smart
 
 import (
-    "bufio"
     "fmt"
     "github.com/dantheman213/watchdog/pkg/cli"
     "github.com/dantheman213/watchdog/pkg/common"
     "log"
     "math"
-    "strings"
     "time"
 )
 
@@ -18,26 +16,9 @@ func Start() {
     go startWeekly()
 }
 
-func getDisks() (*[]string, error) {
-    disks := make([]string, 0)
-
-    stdout, _, err := cli.RunCommand(`/sbin/fdisk -l | grep Disk | grep -e /dev/nvme -e /dev/sd -e /dev/hd | awk '{print $2}' | sed 's/.$//'`)
-    if err != nil {
-        log.Println("ERROR: could not get disks...")
-        return nil, err
-    }
-
-    scanner := bufio.NewScanner(&stdout)
-    for scanner.Scan() {
-        disks = append(disks, strings.TrimSpace(scanner.Text()))
-    }
-
-    return &disks, nil
-}
-
 func startDaily() {
     for true {
-        log.Println("S.M.A.R.T Daily Scan Scheduler has activated...")
+        log.Println("S.M.A.R.T Daily Scan Scheduler timer has activated...")
 
         now := time.Now()
         future := now.AddDate(0, 0, 1)
@@ -54,7 +35,7 @@ func startDaily() {
 
 func startWeekly() {
     for true {
-        log.Println("S.M.A.R.T Weekly Scan Scheduler has activated...")
+        log.Println("S.M.A.R.T Weekly Scan Scheduler timer has activated...")
         now := time.Now()
         target := common.CalculateEndDate(now, time.Sunday)
         delta := now.Sub(target)
@@ -71,7 +52,7 @@ func startWeekly() {
 func testAllDisks(duration string) {
     log.Printf("Starting '%s' type test for all disks...\n", duration)
 
-    disks, err := getDisks()
+    disks, err := common.GetDisks()
     if err != nil {
         log.Fatal(err)
     }

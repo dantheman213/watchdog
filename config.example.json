@@ -1,0 +1,9 @@
+{
+  "EmailAccount": {
+    "Address": "yourname@gmail.com",
+    "Username": "yourname",
+    "Password": "abc123",
+    "SMTPPort": 587,
+    "SMTPHost": "smtp.gmail.com"
+  }
+}

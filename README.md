@@ -29,3 +29,11 @@ tail -f /var/log/watchdog.log
 ### Run At Startup
 
 Add or edit your `/etc/rc.local` and add the `nohup` command above to it. If not running on a Debian-based distro please check your distro's man pages for best practicies. 
+
+### Enable SMTP access to a Gmail Account
+
+Create and use a free Gmail account to send your email alerts from. Learn more:
+
+* https://support.google.com/mail/answer/185833?hl=en
+
+* https://support.google.com/mail/answer/7126229?p=BadCredentials
