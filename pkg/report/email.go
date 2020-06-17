@@ -1,22 +1,20 @@
 package report
 
 import (
+    "fmt"
+    "github.com/dantheman213/watchdog/pkg/config"
     "log"
     "net/smtp"
 )
 
-func sendEmail(to, body string) {
-    from := "...@gmail.com"
-    pass := "..."
-    //to := "foobarbazz@mailinator.com"
+func sendEmail(to, subject, body string) {
+    from := config.Storage.EmailAccount.Address
+    pass := config.Storage.EmailAccount.Password
 
-    msg := "From: " + from + "\n" +
-        "To: " + to + "\n" +
-        "Subject: Hello there\n\n" +
-        body
+    msg := fmt.Sprintf("From: %s\nTo: %s\nSubject: %s\n\n%s", from, to, subject, body)
 
-    err := smtp.SendMail("smtp.gmail.com:587",
-        smtp.PlainAuth("", from, pass, "smtp.gmail.com"),
+    err := smtp.SendMail(fmt.Sprintf("%s:%d", config.Storage.EmailAccount.SMTPHost, config.Storage.EmailAccount.SMTPPort),
+        smtp.PlainAuth("", from, pass, config.Storage.EmailAccount.SMTPHost),
         from, []string{to}, []byte(msg))
 
     if err != nil {
@@ -24,5 +22,5 @@ func sendEmail(to, body string) {
         return
     }
 
-    log.Print("sent, visit http://foobarbazz.mailinator.com")
+    log.Print("email sent successfully")
 }
