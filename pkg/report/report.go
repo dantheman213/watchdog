@@ -87,7 +87,7 @@ func generateReports() {
             report += fmt.Sprintf("%s\n", strings.TrimSpace(scanner.Text()))
         }
 
-        o, _, err = cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -l selftest %s | grep -A 5 "=== START OF READ SMART DATA SECTION ==="`, disk))
+        o, _, err = cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -l selftest %s | grep -A 10 "=== START OF READ SMART DATA SECTION ==="`, disk))
         if err != nil {
             log.Println(err)
             report += fmt.Sprintf("\n%s\n", err)
