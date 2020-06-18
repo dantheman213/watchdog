@@ -61,6 +61,7 @@ func generateReports() {
     for _, disk := range *disks {
         log.Printf("[report] Gathering info on disk %s for report...", disk)
 
+        // S.M.A.R.T reports
         report += fmt.Sprintf("\n\nDisk Path: %s\n", disk)
         o, _, err := cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -i %s | grep -e SMART -e Available -e "Model Family" -e "Device Model" -e "Serial Number"`, disk))
         if err != nil {
@@ -97,8 +98,21 @@ func generateReports() {
         for scanner.Scan() {
             report += fmt.Sprintf("%s\n", strings.TrimSpace(scanner.Text()))
         }
+
+        // ZFS pool report
+        o, _, err = cli.RunCommand(`/usr/sbin/zpool status`)
+        if err != nil {
+            log.Println(err)
+            report += fmt.Sprintf("\n%s\n", err)
+            continue
+        }
+
+        scanner = bufio.NewScanner(&o)
+        for scanner.Scan() {
+            report += fmt.Sprintf("%s\n", strings.TrimSpace(scanner.Text()))
+        }
     }
 
-    log.Println("[report] preparing to send report email")
+    log.Println("[report] preparing to send report email...")
     sendEmail(config.Storage.EmailAccount.Address, "Watchdog Diagnostics Server Results", report)
 }
