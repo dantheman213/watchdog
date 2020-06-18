@@ -28,7 +28,7 @@ import (
 // # 3  Short offline       Completed without error       00%      460         -
 
 func Start() {
-    log.Print("Starting Report Scheduler Daemon...")
+    log.Print("[report] Starting Scheduler Daemon...")
 
     go startWeekly()
 }
@@ -42,7 +42,7 @@ func startWeekly() {
         delta := now.Sub(target)
 
         sleepSecs := math.Abs(delta.Seconds())
-        log.Printf("Sleeping until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
+        log.Printf("[report] Sleeping until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
         time.Sleep(time.Duration(sleepSecs) * time.Second)
 
         generateReports()
@@ -59,7 +59,7 @@ func generateReports() {
     }
 
     for _, disk := range *disks {
-        log.Printf("Gathering info on disk %s for report...", disk)
+        log.Printf("[report] Gathering info on disk %s for report...", disk)
 
         report += fmt.Sprintf("\n\nDisk Path: %s\n", disk)
         o, _, err := cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -i %s | grep -e SMART -e Available -e "Model Family" -e "Device Model" -e "Serial Number"`, disk))
@@ -99,6 +99,6 @@ func generateReports() {
         }
     }
 
-    log.Println("preparing to send report email")
+    log.Println("[report] preparing to send report email")
     sendEmail(config.Storage.EmailAccount.Address, "Watchdog Diagnostics Server Results", report)
 }

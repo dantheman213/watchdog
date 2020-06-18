@@ -26,7 +26,7 @@ func startDaily() {
         delta := now.Sub(target)
 
         sleepSecs := math.Abs(delta.Seconds())
-        log.Printf("Sleeping until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
+        log.Printf("[S.M.A.R.T] Sleeping until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
         time.Sleep(time.Duration(sleepSecs) * time.Second)
 
         testAllDisks("short")
@@ -41,7 +41,7 @@ func startWeekly() {
         delta := now.Sub(target)
 
         sleepSecs := math.Abs(delta.Seconds())
-        log.Printf("Sleeping until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
+        log.Printf("[S.M.A.R.T] Sleeping until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
         time.Sleep(time.Duration(sleepSecs) * time.Second)
 
         testAllDisks("long")
