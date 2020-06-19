@@ -16,8 +16,18 @@ type EmailAccount struct {
     SMTPHost string
 }
 
+type Schedule struct {
+    Report *[]TimeItem
+}
+
+type TimeItem struct {
+    Day int
+    Time string
+}
+
 type Config struct {
     EmailAccount *EmailAccount
+    Schedule *Schedule
 }
 
 var Storage *Config

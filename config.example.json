@@ -5,5 +5,19 @@
     "Password": "abc123",
     "SMTPPort": 587,
     "SMTPHost": "smtp.gmail.com"
+  },
+  "Schedule": {
+    "Report": [
+      {
+        "Day": 1,
+        "Time": "00:05"
+      }, {
+        "Day": 3,
+        "Time": "00:05"
+      }, {
+        "Day": 5,
+        "Time": "00:05"
+      }
+    ]
   }
 }

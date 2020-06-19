@@ -36,11 +36,8 @@ func Start() {
 func startWeekly() {
     for true {
         log.Println("Report Weekly Scheduler timer has activated...")
-
-        now := time.Now()
-        target := common.CalculateEndDate(now, time.Saturday)
-        delta := now.Sub(target)
-
+        target := common.GetNextScheduleTimeInSeconds(config.Storage.Schedule.Report)
+        delta := time.Now().Sub(target)
         sleepSecs := math.Abs(delta.Seconds())
         log.Printf("[report] Sleeping until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
         time.Sleep(time.Duration(sleepSecs) * time.Second)

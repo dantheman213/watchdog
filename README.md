@@ -22,6 +22,11 @@ Use the example below in order to download, compile, and run the app on your ser
 git clone https://github.com/dantheman213/watchdog /opt/watchdog
 cd /opt/watchdog
 make
+
+# edit me before continuing
+rsync -aqz config.example.json /etc/watchdog/config.json
+nano /etc/watchdog/config.json
+
 nohup /opt/watchdog/bin/watchdog >> /var/log/watchdog.log 2>&1 &
 tail -f /var/log/watchdog.log
 ```
@@ -37,3 +42,9 @@ Create and use a free Gmail account to send your email alerts from. Learn more:
 * https://support.google.com/mail/answer/185833?hl=en
 
 * https://support.google.com/mail/answer/7126229?p=BadCredentials
+
+## Configuration
+
+### Email Reports
+
+Reports can be sent out via email by modifying `config.json` and modifying the array as you see fit. For day of week, use (0-6) to denote Sunday-Saturday. For time, use military time format (e.g. 23:20 to indicate 11:20 PM or 00:00 to indicate midnight.
