@@ -11,10 +11,14 @@ import (
     "time"
 )
 
-func CalculateEndDate(t time.Time, wd time.Weekday) time.Time {
+// Return Time of next target weekday at midnight local time
+func CalculateTimeUntilTargetWeekday(t time.Time, wd time.Weekday) time.Time {
     next := int((wd - t.Weekday() + 7) % 7)
+    if t.Weekday() == wd {
+        next = 7
+    }
     y, m, d := t.Date()
-    return time.Date(y, m, d+next+1, 0, 0, 0, -1, t.Location())
+    return time.Date(y, m, d+next, 0, 0, 0, 0, t.Location())
 }
 
 func GetNextScheduleTimeInSeconds(schedule *[]config.TimeItem) time.Time {
@@ -22,7 +26,7 @@ func GetNextScheduleTimeInSeconds(schedule *[]config.TimeItem) time.Time {
     timeItems := make([]time.Time, 0)
 
     for _, item := range *schedule {
-        t := CalculateEndDate(now, time.Weekday(item.Day))
+        t := CalculateTimeUntilTargetWeekday(now, time.Weekday(item.Day))
         parts := strings.Split(item.Time, ":")
         hours, _ := strconv.Atoi(parts[0])
         minutes, _ := strconv.Atoi(parts[1])
