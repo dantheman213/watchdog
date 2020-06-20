@@ -17,6 +17,7 @@ type EmailAccount struct {
 }
 
 type Schedule struct {
+    ReportName string
     Report *[]TimeItem
 }
 
@@ -26,6 +27,7 @@ type TimeItem struct {
 }
 
 type Config struct {
+    ServerName string
     EmailAccount *EmailAccount
     Schedule *Schedule
 }

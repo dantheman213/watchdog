@@ -49,7 +49,7 @@ func startWeekly() {
 
 func generateReports() {
     log.Print("Generating Reports...")
-    report := ""
+    report := fmt.Sprintf("%s\n\n", config.Storage.Schedule.ReportName)
 
     disks, err := common.GetDisks()
     if err != nil {
@@ -112,5 +112,5 @@ func generateReports() {
     }
 
     log.Println("[report] preparing to send report email...")
-    sendEmail(config.Storage.EmailAccount.Address, "Watchdog Diagnostics Server Results", report)
+    sendEmail(config.Storage.EmailAccount.Address, config.Storage.Schedule.ReportName, report)
 }

@@ -1,4 +1,5 @@
 {
+  "ServerName": "example",
   "EmailAccount": {
     "Address": "yourname@gmail.com",
     "Username": "yourname",
@@ -7,6 +8,7 @@
     "SMTPHost": "smtp.gmail.com"
   },
   "Schedule": {
+    "ReportName": "Watchdog Diagnostics Server Results",
     "Report": [
       {
         "Day": 1,
