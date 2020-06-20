@@ -4,7 +4,7 @@ import (
     "bufio"
     "fmt"
     "github.com/dantheman213/watchdog/pkg/cli"
-    "github.com/dantheman213/watchdog/pkg/common"
+    libTime "github.com/dantheman213/watchdog/pkg/time"
     "log"
     "math"
     "strings"
@@ -21,7 +21,7 @@ func startWeekly() {
     for true {
         log.Println("[ZFS] Weekly Scrub Scheduler has activated...")
         now := time.Now()
-        target := common.CalculateEndDate(now, time.Wednesday)
+        target := libTime.CalculateTimeUntilTargetWeekday(now, time.Wednesday)
         delta := now.Sub(target)
 
         sleepSecs := math.Abs(delta.Seconds())

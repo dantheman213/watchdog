@@ -6,6 +6,7 @@ import (
     "github.com/dantheman213/watchdog/pkg/cli"
     "github.com/dantheman213/watchdog/pkg/common"
     "github.com/dantheman213/watchdog/pkg/config"
+    libTime "github.com/dantheman213/watchdog/pkg/time"
     "log"
     "math"
     "strings"
@@ -36,7 +37,7 @@ func Start() {
 func startWeekly() {
     for true {
         log.Println("Report Weekly Scheduler timer has activated...")
-        target := common.GetNextScheduleTimeInSeconds(config.Storage.Schedule.Report)
+        target := libTime.GetNextScheduleTimeInSeconds(config.Storage.Schedule.Report)
         delta := time.Now().Sub(target)
         sleepSecs := math.Abs(delta.Seconds())
         log.Printf("[report] Sleeping until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
