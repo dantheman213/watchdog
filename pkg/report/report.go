@@ -29,9 +29,8 @@ import (
 // # 3  Short offline       Completed without error       00%      460         -
 
 func Start() {
-    log.Print("[report] Starting Scheduler Daemon...")
-
     if config.Storage.Diagnostics.EmailReport {
+        log.Print("[report] Starting Scheduler Daemon...")
         go startScheduler()
     }
 }
