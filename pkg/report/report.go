@@ -49,13 +49,14 @@ func startWeekly() {
 
 func generateReports() {
     log.Print("Generating Reports...")
-    report := fmt.Sprintf("%s\n\n", config.Storage.Schedule.ReportName)
+    report := fmt.Sprintf("<h1>%s</h1>\n\n", config.Storage.Schedule.ReportName)
 
     disks, err := common.GetDisks()
     if err != nil {
         log.Fatal(err)
     }
 
+    report += fmt.Sprintf("\n\n<h2>S.M.A.R.T Disk Results</h2>\n\n")
     for _, disk := range *disks {
         log.Printf("[report] Gathering info on disk %s for report...", disk)
 
@@ -96,19 +97,18 @@ func generateReports() {
         for scanner.Scan() {
             report += fmt.Sprintf("%s\n", strings.TrimSpace(scanner.Text()))
         }
+    }
 
-        // ZFS pool report
-        o, _, err = cli.RunCommand(`/usr/sbin/zpool status`)
-        if err != nil {
-            log.Println(err)
-            report += fmt.Sprintf("\n%s\n", err)
-            continue
-        }
-
-        scanner = bufio.NewScanner(&o)
-        for scanner.Scan() {
-            report += fmt.Sprintf("%s\n", strings.TrimSpace(scanner.Text()))
-        }
+    // ZFS pool report
+    report += fmt.Sprintf("\n\n<h2>ZFS Pool Results</h2>\n\n")
+    o, _, err := cli.RunCommand(`/usr/sbin/zpool status`)
+    if err != nil {
+        log.Println(err)
+        report += fmt.Sprintf("\n%s\n", err)
+    }
+    scanner := bufio.NewScanner(&o)
+    for scanner.Scan() {
+        report += fmt.Sprintf("%s\n", strings.TrimSpace(scanner.Text()))
     }
 
     log.Println("[report] preparing to send report email...")
