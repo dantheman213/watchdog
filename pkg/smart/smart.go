@@ -38,7 +38,7 @@ func startWeekly() {
     for true {
         log.Println("[S.M.A.R.T] Weekly Scan Scheduler timer has activated...")
         now := time.Now()
-        target := libTime.CalculateTimeUntilTargetWeekday(now, time.Sunday)
+        target := libTime.CalculateTimeUntilTargetWeekday(time.Sunday, 0, 0)
         delta := now.Sub(target)
 
         sleepSecs := math.Abs(delta.Seconds())

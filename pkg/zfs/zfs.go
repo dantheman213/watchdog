@@ -21,7 +21,7 @@ func startWeekly() {
     for true {
         log.Println("[ZFS] Weekly Scrub Scheduler has activated...")
         now := time.Now()
-        target := libTime.CalculateTimeUntilTargetWeekday(now, time.Wednesday)
+        target := libTime.CalculateTimeUntilTargetWeekday(time.Wednesday, 0, 0)
         delta := now.Sub(target)
 
         sleepSecs := math.Abs(delta.Seconds())
