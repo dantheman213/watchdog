@@ -53,64 +53,68 @@ func generateReports() {
     log.Print("Generating Reports...")
     report := fmt.Sprintf("<h1>%s</h1>\n<strong>%s</strong>\n\n", config.Storage.ReportName, config.Storage.ServerName)
 
-    disks, err := common.GetDisks()
-    if err != nil {
-        log.Fatal(err)
+    if config.Storage.Diagnostics.SMARTTestShort || config.Storage.Diagnostics.SMARTTestLong {
+        disks, err := common.GetDisks()
+        if err != nil {
+            log.Fatal(err)
+        }
+
+        report += fmt.Sprintf("\n\n<h2>S.M.A.R.T Disk Results</h2>\n\n")
+        for _, disk := range *disks {
+            log.Printf("[report] Gathering info on disk %s for report...", disk)
+
+            // S.M.A.R.T reports
+            report += fmt.Sprintf("\n\nDisk Path: %s\n", disk)
+            o, _, err := cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -i %s | grep -e SMART -e Available -e "Model Family" -e "Device Model" -e "Serial Number"`, disk))
+            if err != nil {
+                log.Println(err)
+                report += fmt.Sprintf("\n%s\n", err)
+                continue
+            }
+
+            scanner := bufio.NewScanner(&o)
+            for scanner.Scan() {
+                report += fmt.Sprintf("%s\n", strings.TrimSpace(scanner.Text()))
+            }
+
+            o, _, err = cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -a %s | grep -e "test result" -e " PASS" -e " FAIL"`, disk))
+            if err != nil {
+                log.Println(err)
+                report += fmt.Sprintf("\n%s\n", err)
+                continue
+            }
+
+            scanner = bufio.NewScanner(&o)
+            for scanner.Scan() {
+                report += fmt.Sprintf("%s\n", strings.TrimSpace(scanner.Text()))
+            }
+
+            o, _, err = cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -l selftest %s | grep -A 10 "=== START OF READ SMART DATA SECTION ==="`, disk))
+            if err != nil {
+                log.Println(err)
+                report += fmt.Sprintf("\n%s\n", err)
+                continue
+            }
+
+            scanner = bufio.NewScanner(&o)
+            for scanner.Scan() {
+                report += fmt.Sprintf("%s\n", strings.TrimSpace(scanner.Text()))
+            }
+        }
     }
 
-    report += fmt.Sprintf("\n\n<h2>S.M.A.R.T Disk Results</h2>\n\n")
-    for _, disk := range *disks {
-        log.Printf("[report] Gathering info on disk %s for report...", disk)
-
-        // S.M.A.R.T reports
-        report += fmt.Sprintf("\n\nDisk Path: %s\n", disk)
-        o, _, err := cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -i %s | grep -e SMART -e Available -e "Model Family" -e "Device Model" -e "Serial Number"`, disk))
+    if config.Storage.Diagnostics.ZFSPoolScrub {
+        // ZFS pool report
+        report += fmt.Sprintf("\n\n<h2>ZFS Pool Results</h2>\n\n")
+        o, _, err := cli.RunCommand(`/usr/sbin/zpool status`)
         if err != nil {
             log.Println(err)
             report += fmt.Sprintf("\n%s\n", err)
-            continue
         }
-
         scanner := bufio.NewScanner(&o)
         for scanner.Scan() {
             report += fmt.Sprintf("%s\n", strings.TrimSpace(scanner.Text()))
         }
-
-        o, _, err = cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -a %s | grep -e "test result" -e " PASS" -e " FAIL"`, disk))
-        if err != nil {
-            log.Println(err)
-            report += fmt.Sprintf("\n%s\n", err)
-            continue
-        }
-
-        scanner = bufio.NewScanner(&o)
-        for scanner.Scan() {
-            report += fmt.Sprintf("%s\n", strings.TrimSpace(scanner.Text()))
-        }
-
-        o, _, err = cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -l selftest %s | grep -A 10 "=== START OF READ SMART DATA SECTION ==="`, disk))
-        if err != nil {
-            log.Println(err)
-            report += fmt.Sprintf("\n%s\n", err)
-            continue
-        }
-
-        scanner = bufio.NewScanner(&o)
-        for scanner.Scan() {
-            report += fmt.Sprintf("%s\n", strings.TrimSpace(scanner.Text()))
-        }
-    }
-
-    // ZFS pool report
-    report += fmt.Sprintf("\n\n<h2>ZFS Pool Results</h2>\n\n")
-    o, _, err := cli.RunCommand(`/usr/sbin/zpool status`)
-    if err != nil {
-        log.Println(err)
-        report += fmt.Sprintf("\n%s\n", err)
-    }
-    scanner := bufio.NewScanner(&o)
-    for scanner.Scan() {
-        report += fmt.Sprintf("%s\n", strings.TrimSpace(scanner.Text()))
     }
 
     log.Println("[report] preparing to send report email...")
