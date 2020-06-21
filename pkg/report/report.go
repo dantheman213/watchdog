@@ -31,12 +31,14 @@ import (
 func Start() {
     log.Print("[report] Starting Scheduler Daemon...")
 
-    go startScheduler()
+    if config.Storage.Diagnostics.EmailReport {
+        go startScheduler()
+    }
 }
 
 func startScheduler() {
     for true {
-        log.Println("Report Scheduler timer has activated...")
+        log.Println("[report] Scheduler timer has activated...")
         target := libTime.GetNextScheduleTimeInSeconds(config.Storage.Schedule.Report)
         delta := time.Now().Sub(target)
         sleepSecs := math.Abs(delta.Seconds())
