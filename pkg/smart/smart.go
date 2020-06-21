@@ -4,6 +4,7 @@ import (
     "fmt"
     "github.com/dantheman213/watchdog/pkg/cli"
     "github.com/dantheman213/watchdog/pkg/common"
+    "github.com/dantheman213/watchdog/pkg/config"
     libTime "github.com/dantheman213/watchdog/pkg/time"
     "log"
     "math"
@@ -11,38 +12,40 @@ import (
 )
 
 func Start() {
-    log.Print("[S.M.A.R.T] Starting Scheduler Daemon...")
+    if config.Storage.Diagnostics.SMARTTestShort || config.Storage.Diagnostics.SMARTTestLong {
+        log.Print("[S.M.A.R.T] Starting Scheduler Daemon...")
 
-    go startDaily()
-    go startWeekly()
+        if config.Storage.Diagnostics.SMARTTestShort {
+            go startShortTestScheduler()
+        }
+        if config.Storage.Diagnostics.SMARTTestLong {
+            go startLongTestScheduler()
+        }
+    }
 }
 
-func startDaily() {
+func startShortTestScheduler() {
     for true {
-        log.Println("[S.M.A.R.T] Daily Scan Scheduler timer has activated...")
+        log.Println("[S.M.A.R.T] Short Test Scheduler timer has activated...")
 
-        now := time.Now()
-        future := now.AddDate(0, 0, 1)
-        target := time.Date(future.Year(), future.Month(), future.Day(), 0, 0, 0, 0, time.Local)
-        delta := now.Sub(target)
-
+        target := libTime.GetNextScheduleTimeInSeconds(config.Storage.Schedule.SMARTTestShort)
+        delta := time.Now().Sub(target)
         sleepSecs := math.Abs(delta.Seconds())
-        log.Printf("[S.M.A.R.T] Sleeping daily test until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
+        log.Printf("[S.M.A.R.T] Sleeping short test until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
         time.Sleep(time.Duration(sleepSecs) * time.Second)
 
         testAllDisks("short")
     }
 }
 
-func startWeekly() {
+func startLongTestScheduler() {
     for true {
-        log.Println("[S.M.A.R.T] Weekly Scan Scheduler timer has activated...")
-        now := time.Now()
-        target := libTime.CalculateTimeUntilTargetWeekday(time.Sunday, 0, 0)
-        delta := now.Sub(target)
+        log.Println("[S.M.A.R.T] Long Test Scheduler timer has activated...")
 
+        target := libTime.GetNextScheduleTimeInSeconds(config.Storage.Schedule.SMARTTestLong)
+        delta := time.Now().Sub(target)
         sleepSecs := math.Abs(delta.Seconds())
-        log.Printf("[S.M.A.R.T] Sleeping weekly test until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
+        log.Printf("[S.M.A.R.T] Sleeping long test until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
         time.Sleep(time.Duration(sleepSecs) * time.Second)
 
         testAllDisks("long")

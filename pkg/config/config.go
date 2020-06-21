@@ -19,6 +19,9 @@ type EmailAccount struct {
 type Schedule struct {
     ReportName string
     Report *[]TimeItem
+    SMARTTestShort *[]TimeItem
+    SMARTTestLong *[]TimeItem
+    ZFSTestScrub *[]TimeItem
 }
 
 type TimeItem struct {
@@ -26,8 +29,15 @@ type TimeItem struct {
     Time string
 }
 
+type Diagnostics struct {
+    SMARTTestShort bool
+    SMARTTestLong bool
+    ZFSPoolScrub bool
+}
+
 type Config struct {
     ServerName string
+    Diagnostics *Diagnostics
     EmailAccount *EmailAccount
     Schedule *Schedule
 }

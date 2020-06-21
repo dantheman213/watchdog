@@ -7,19 +7,58 @@
     "SMTPPort": 587,
     "SMTPHost": "smtp.gmail.com"
   },
+  "Diagnostics": {
+    "SMARTTestShort": true,
+    "SMARTTestLong": true,
+    "ZFSPoolScrub": true
+  },
   "Schedule": {
     "ReportName": "Watchdog Diagnostics Server Results",
     "Report": [
       {
         "Day": 1,
-        "Time": "00:05"
+        "Time": "08:05"
       }, {
         "Day": 3,
-        "Time": "00:05"
+        "Time": "08:05"
       }, {
         "Day": 5,
-        "Time": "00:05"
+        "Time": "08:05"
       }
-    ]
+    ],
+    "SMARTTestShort": [
+      {
+        "Day": 0,
+        "Time": "00:00"
+      }, {
+        "Day": 1,
+        "Time": "00:00"
+      }, {
+        "Day": 2,
+        "Time": "00:00"
+      }, {
+        "Day": 3,
+        "Time": "00:00"
+      }, {
+        "Day": 4,
+        "Time": "00:00"
+      }, {
+        "Day": 5,
+        "Time": "00:00"
+      }, {
+        "Day": 6,
+        "Time": "00:00"
+      }
+    ],
+    "SMARTTestLong": [
+      {
+        "Day": 0,
+        "Time": "02:05"
+      }
+    ],
+    "ZFSTestScrub": {
+      "Day": 3,
+      "Time": "02:05"
+    }
   }
 }

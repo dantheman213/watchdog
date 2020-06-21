@@ -4,6 +4,7 @@ import (
     "bufio"
     "fmt"
     "github.com/dantheman213/watchdog/pkg/cli"
+    "github.com/dantheman213/watchdog/pkg/config"
     libTime "github.com/dantheman213/watchdog/pkg/time"
     "log"
     "math"
@@ -12,18 +13,17 @@ import (
 )
 
 func Start() {
-    log.Println("[ZFS] Starting Scheduler Daemon...")
-
-    go startWeekly()
+    if config.Storage.Diagnostics.ZFSPoolScrub {
+        log.Println("[ZFS] Starting Scheduler Daemon...")
+        go startScheduler()
+    }
 }
 
-func startWeekly() {
+func startScheduler() {
     for true {
-        log.Println("[ZFS] Weekly Scrub Scheduler has activated...")
-        now := time.Now()
-        target := libTime.CalculateTimeUntilTargetWeekday(time.Wednesday, 0, 0)
-        delta := now.Sub(target)
-
+        log.Println("[ZFS] Scrub Scheduler has activated...")
+        target := libTime.GetNextScheduleTimeInSeconds(config.Storage.Schedule.ZFSTestScrub)
+        delta := time.Now().Sub(target)
         sleepSecs := math.Abs(delta.Seconds())
         log.Printf("[ZFS] Sleeping until %s (%s or %f seconds)\n", target.String(), delta.String(), sleepSecs)
         time.Sleep(time.Duration(sleepSecs) * time.Second)

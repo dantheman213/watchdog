@@ -31,12 +31,12 @@ import (
 func Start() {
     log.Print("[report] Starting Scheduler Daemon...")
 
-    go startWeekly()
+    go startScheduler()
 }
 
-func startWeekly() {
+func startScheduler() {
     for true {
-        log.Println("Report Weekly Scheduler timer has activated...")
+        log.Println("Report Scheduler timer has activated...")
         target := libTime.GetNextScheduleTimeInSeconds(config.Storage.Schedule.Report)
         delta := time.Now().Sub(target)
         sleepSecs := math.Abs(delta.Seconds())
@@ -49,7 +49,7 @@ func startWeekly() {
 
 func generateReports() {
     log.Print("Generating Reports...")
-    report := fmt.Sprintf("<h1>%s</h1>\n\n", config.Storage.Schedule.ReportName)
+    report := fmt.Sprintf("<h1>%s</h1>\n<strong>%s</strong>\n\n", config.Storage.Schedule.ReportName, config.Storage.ServerName)
 
     disks, err := common.GetDisks()
     if err != nil {
@@ -112,5 +112,6 @@ func generateReports() {
     }
 
     log.Println("[report] preparing to send report email...")
-    sendEmail(config.Storage.EmailAccount.Address, config.Storage.Schedule.ReportName, report)
+    subject := fmt.Sprintf("%s -- %s", config.Storage.Schedule.ReportName, config.Storage.ServerName)
+    sendEmail(config.Storage.EmailAccount.Address, subject, report)
 }
