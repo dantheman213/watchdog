@@ -23,7 +23,6 @@ func CalculateTimeUntilTargetWeekday(wd time.Weekday, addHours, addMinutes int) 
 }
 
 func GetNextScheduleTimeInSeconds(schedule *[]config.TimeItem) time.Time {
-    now := time.Now()
     timeItems := make([]time.Time, 0)
 
     for _, item := range *schedule {
