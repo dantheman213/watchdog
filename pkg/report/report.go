@@ -49,7 +49,7 @@ func startScheduler() {
 
 func generateReports() {
     log.Print("Generating Reports...")
-    report := fmt.Sprintf("<h1>%s</h1>\n<strong>%s</strong>\n\n", config.Storage.Schedule.ReportName, config.Storage.ServerName)
+    report := fmt.Sprintf("<h1>%s</h1>\n<strong>%s</strong>\n\n", config.Storage.ReportName, config.Storage.ServerName)
 
     disks, err := common.GetDisks()
     if err != nil {
@@ -112,6 +112,6 @@ func generateReports() {
     }
 
     log.Println("[report] preparing to send report email...")
-    subject := fmt.Sprintf("%s -- %s", config.Storage.Schedule.ReportName, config.Storage.ServerName)
+    subject := fmt.Sprintf("%s -- %s", config.Storage.ReportName, config.Storage.ServerName)
     sendEmail(config.Storage.EmailAccount.Address, subject, report)
 }

@@ -1,5 +1,6 @@
 {
   "ServerName": "example",
+  "ReportName": "Watchdog Diagnostics Server Results",
   "EmailAccount": {
     "Address": "yourname@gmail.com",
     "Username": "yourname",
@@ -10,10 +11,10 @@
   "Diagnostics": {
     "SMARTTestShort": true,
     "SMARTTestLong": true,
-    "ZFSPoolScrub": true
+    "ZFSPoolScrub": true,
+    "EmailReport": true
   },
   "Schedule": {
-    "ReportName": "Watchdog Diagnostics Server Results",
     "Report": [
       {
         "Day": 1,
