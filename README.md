@@ -23,7 +23,6 @@ Use the example below in order to download, compile, and run the app on your ser
 ```
 git clone https://github.com/dantheman213/watchdog /tmp/watchdog
 cd /tmp/watchdog
-make
 make install
 
 # edit me before continuing
@@ -39,6 +38,8 @@ systemctl start watchdog
 systemctl status watchdog
 tail -f /var/log/watchdog.log
 ```
+
+## Additional Info
 
 ### Enable SMTP access to a Gmail Account
 

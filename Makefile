@@ -28,6 +28,6 @@ install: build
 	@cp -av bin/watchdog /usr/bin/watchdog
 	@chmod +x /usr/bin/watchdog
 	@mkdir -p /etc/watchdog
-	@cp -av dist/config.example.json /etc/watchdog/config.json
+	@cp -avn dist/config.example.json /etc/watchdog/config.json
 	@cp -av dist/watchdog.service /etc/systemd/system
 	@chmod 644 /etc/systemd/system/watchdog.service
