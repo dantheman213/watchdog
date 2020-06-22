@@ -1,9 +1,13 @@
 [Unit]
 Description=Watchdog Daemon
+After=network.target
 
 [Service]
 Type=simple
 ExecStart=/usr/bin/watchdog
+StandardOutput=file:/var/log/watchdog.log
+StandardError=inherit
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
