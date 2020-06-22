@@ -18,22 +18,27 @@ Automatically conduct, monitor, and report on health of disks, ZFS clusters, and
 
 Use the example below in order to download, compile, and run the app on your server.
 
+### Download and Install
+
 ```
-git clone https://github.com/dantheman213/watchdog /opt/watchdog
-cd /opt/watchdog
+git clone https://github.com/dantheman213/watchdog /tmp/watchdog
+cd /tmp/watchdog
 make
+make install
 
 # edit me before continuing
-rsync -aqz config.example.json /etc/watchdog/config.json
 nano /etc/watchdog/config.json
 
-nohup /opt/watchdog/bin/watchdog >> /var/log/watchdog.log 2>&1 &
-tail -f /var/log/watchdog.log
+systemctl enable watchdog
+systemctl start watchdog
 ```
 
-### Run At Startup
+### Review Logs
 
-Add or edit your `/etc/rc.local` and add the `nohup` command above to it. If not running on a Debian-based distro please check your distro's man pages for best practicies. 
+```
+systemctl status watchdog
+tail -f /var/log/watchdog.log
+```
 
 ### Enable SMTP access to a Gmail Account
 
