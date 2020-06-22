@@ -3,7 +3,7 @@ Description=Watchdog Daemon
 
 [Service]
 Type=simple
-ExecStart=/bin/bash /usr/bin/watchdog
+ExecStart=/usr/bin/watchdog
 
 [Install]
 WantedBy=multi-user.target
