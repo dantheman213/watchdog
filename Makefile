@@ -15,14 +15,16 @@ build: deps
 	$(BUILD_FLAGS) \
 	-o $(BIN_PATH) \
 	$$(find cmd/app/*.go)
+	@echo Generated assets:
+	@find bin/
 
 clean:
-	@echo Cleaning bin/ directory... && \
-		rm -rfv bin/
+	@echo Cleaning bin/ directory...
+	@rm -rfv bin/
 
 deps:
-	@echo Downloading go.mod dependencies && \
-		go mod download
+	@echo Downloading go.mod dependencies
+	@go mod download
 
 install:
 	@echo Installing...
