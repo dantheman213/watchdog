@@ -6,8 +6,9 @@ BUILD_FLAGS := -installsuffix "static"
 
 all: build
 
-build:
-	CGO_ENABLED=1 \
+build: deps
+	@echo Compiling binary...
+	@CGO_ENABLED=1 \
 	GO111MODULE=on \
 	GOARCH=amd64 \
 	go build \
@@ -23,7 +24,7 @@ deps:
 	@echo Downloading go.mod dependencies && \
 		go mod download
 
-install: build
+install:
 	@echo Installing...
 	@cp -av bin/watchdog /usr/bin/watchdog
 	@chmod +x /usr/bin/watchdog
