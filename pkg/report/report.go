@@ -75,7 +75,15 @@ func generateReports() {
 
             scanner := bufio.NewScanner(&o)
             if scanner.Scan() {
-                testResultSummary += fmt.Sprintf("Disk %s: %s\n", disk, scanner.Text())
+                result := scanner.Text()
+                if strings.Index(result, "PASSED") > -1 {
+                    result = "PASSED"
+                } else if strings.Index(result, "PASSED") > -1 {
+                    result = "FAILED"
+                } else {
+                    result = "UNKNOWN"
+                }
+                testResultSummary += fmt.Sprintf("Disk %s : %s\n", disk, result)
             }
 
             report += fmt.Sprintf("\n\nDisk Path: %s\n", disk)
