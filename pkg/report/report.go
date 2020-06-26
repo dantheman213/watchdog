@@ -143,7 +143,7 @@ func generateReports() {
     log.Println("[report] preparing to send report email...")
     subject := fmt.Sprintf("%s -- %s", config.Storage.ReportName, config.Storage.ServerName)
     body := header + "\n"
-    if !config.Storage.Diagnostics.SMARTTestShort || !config.Storage.Diagnostics.SMARTTestLong {
+    if config.Storage.Diagnostics.SMARTTestShort || config.Storage.Diagnostics.SMARTTestLong {
         body += testResultSummary + "\n"
     }
     body += report
