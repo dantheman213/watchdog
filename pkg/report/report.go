@@ -50,7 +50,8 @@ func startScheduler() {
 
 func generateReports() {
     log.Print("Generating Reports...")
-    report := fmt.Sprintf("<h1>%s</h1>\n<strong>%s</strong>\n\n", config.Storage.ReportName, config.Storage.ServerName)
+    header := fmt.Sprintf("<h1>%s</h1>\n<strong>%s</strong>\n\n", config.Storage.ReportName, config.Storage.ServerName)
+    report := ""
     testResultSummary := "<h2>Summary</h2>\n"
 
     if config.Storage.Diagnostics.SMARTTestShort || config.Storage.Diagnostics.SMARTTestLong {
@@ -141,6 +142,10 @@ func generateReports() {
 
     log.Println("[report] preparing to send report email...")
     subject := fmt.Sprintf("%s -- %s", config.Storage.ReportName, config.Storage.ServerName)
-    body := fmt.Sprintf("%s\n\n%s", testResultSummary, report)
+    body := header + "\n"
+    if !config.Storage.Diagnostics.SMARTTestShort || !config.Storage.Diagnostics.SMARTTestLong {
+        body += testResultSummary + "\n"
+    }
+    body += report
     sendEmail(config.Storage.EmailAccount.Address, subject, body)
 }
