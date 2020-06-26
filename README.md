@@ -2,23 +2,9 @@
 
 Automatically conduct, monitor, and report on health of disks, ZFS clusters, and UPS hardware to maintain your physical server.
 
-## Features
-
-* Run S.M.A.R.T. `short` test on all your compatible physical disks every day.
-
-* Run S.M.A.R.T. `long` test on all your compatible physical disks every Sunday.
-
-* Run ZFS scrub on all your pools every Wednesday.
-
-* [IN PROGRESS] Check and report on UPS activations or failures.
-
-* Generate reports and have it sent to you via email every Saturday.
-
 ## Getting Started
 
 Use the example below in order to download, compile, and run the app on your server.
-
-### Download and Install
 
 ```
 git clone https://github.com/dantheman213/watchdog /tmp/watchdog
@@ -33,7 +19,19 @@ systemctl enable watchdog
 systemctl start watchdog
 ```
 
-### Review Logs
+## Features
+
+* Run S.M.A.R.T. `short` test on all your compatible physical disks on your custom schedule.
+
+* Run S.M.A.R.T. `long` test on all your compatible physical disks on your custom schedule.
+
+* Run ZFS scrub on all your pools on your custom schedule.
+
+* [IN PROGRESS] Check and report on UPS activations or failures.
+
+* Generate reports and have it sent to you via email on your custom schedule.
+
+## Review Logs
 
 ```
 systemctl status watchdog
