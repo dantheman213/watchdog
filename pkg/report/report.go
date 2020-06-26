@@ -51,6 +51,7 @@ func startScheduler() {
 func generateReports() {
     log.Print("Generating Reports...")
     report := fmt.Sprintf("<h1>%s</h1>\n<strong>%s</strong>\n\n", config.Storage.ReportName, config.Storage.ServerName)
+    testResultSummary := "<h2>Summary</h2>\n"
 
     if config.Storage.Diagnostics.SMARTTestShort || config.Storage.Diagnostics.SMARTTestLong {
         disks, err := common.GetDisks()
@@ -63,15 +64,29 @@ func generateReports() {
             log.Printf("[report] Gathering info on disk %s for report...", disk)
 
             // S.M.A.R.T reports
+
+            // get a summary PASS/FAIL from each disk
+            o, _, err := cli.RunCommand(fmt.Sprintf(`smartctl -a %s | grep -e ": PASSED" -e ": FAILED"`, disk))
+            if err != nil {
+                log.Println(err)
+                testResultSummary += fmt.Sprintf("\nDisk %s: ERROR %s\n\n", disk, err)
+                continue
+            }
+
+            scanner := bufio.NewScanner(&o)
+            if scanner.Scan() {
+                testResultSummary += fmt.Sprintf("Disk %s: %s\n", disk, scanner.Text())
+            }
+
             report += fmt.Sprintf("\n\nDisk Path: %s\n", disk)
-            o, _, err := cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -i %s | grep -e SMART -e Available -e "Model Family" -e "Device Model" -e "Serial Number"`, disk))
+            o, _, err = cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -i %s | grep -e SMART -e Available -e "Model Family" -e "Device Model" -e "Serial Number"`, disk))
             if err != nil {
                 log.Println(err)
                 report += fmt.Sprintf("\n%s\n", err)
                 continue
             }
 
-            scanner := bufio.NewScanner(&o)
+            scanner = bufio.NewScanner(&o)
             for scanner.Scan() {
                 report += fmt.Sprintf("%s\n", strings.TrimSpace(scanner.Text()))
             }
@@ -118,5 +133,6 @@ func generateReports() {
 
     log.Println("[report] preparing to send report email...")
     subject := fmt.Sprintf("%s -- %s", config.Storage.ReportName, config.Storage.ServerName)
-    sendEmail(config.Storage.EmailAccount.Address, subject, report)
+    body := fmt.Sprintf("%s\n\n%s", testResultSummary, report)
+    sendEmail(config.Storage.EmailAccount.Address, subject, body)
 }
