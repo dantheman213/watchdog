@@ -128,13 +128,23 @@ func generateReports() {
 
     if config.Storage.Diagnostics.ZFSPoolScrub {
         // ZFS pool report
-        report += fmt.Sprintf("\n\n<h2>ZFS Pool Results</h2>\n\n")
-        o, _, err := cli.RunCommand(`/usr/sbin/zpool status`)
+        o, _, err := cli.RunCommand(`/usr/sbin/zpool status -x`)
         if err != nil {
             log.Println(err)
             report += fmt.Sprintf("\n%s\n", err)
         }
         scanner := bufio.NewScanner(&o)
+        if scanner.Scan() {
+            testResultSummary += fmt.Sprintf("\n\nZFS pool(s): %s\n", strings.TrimSpace(scanner.Text()))
+        }
+
+        report += fmt.Sprintf("\n\n<h2>ZFS Pool Results</h2>\n\n")
+        o, _, err = cli.RunCommand(`/usr/sbin/zpool status -v`)
+        if err != nil {
+            log.Println(err)
+            report += fmt.Sprintf("\n%s\n", err)
+        }
+        scanner = bufio.NewScanner(&o)
         for scanner.Scan() {
             report += fmt.Sprintf("%s\n", strings.TrimSpace(scanner.Text()))
         }
