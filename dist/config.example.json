@@ -12,7 +12,8 @@
     "SMARTTestShort": true,
     "SMARTTestLong": true,
     "ZFSPoolScrub": true,
-    "EmailReport": true
+    "EmailReport": true,
+    "UPSTest": true
   },
   "Schedule": {
     "Report": [
