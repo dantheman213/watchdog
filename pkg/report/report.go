@@ -131,7 +131,7 @@ func generateReports() {
         o, _, err := cli.RunCommand(`/usr/sbin/zpool status -x`)
         if err != nil {
             log.Println(err)
-            report += fmt.Sprintf("\n%s\n", err)
+            testResultSummary += fmt.Sprintf("\n%s\n", err)
         }
         scanner := bufio.NewScanner(&o)
         if scanner.Scan() {
