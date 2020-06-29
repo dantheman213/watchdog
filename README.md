@@ -27,7 +27,7 @@ systemctl start watchdog
 
 * Run ZFS scrub on all your pools on your custom schedule.
 
-* [IN PROGRESS] Check and report on UPS activations or failures.
+* Test and review UPS health on your custom schedule.
 
 * Generate reports and have it sent to you via email on your custom schedule.
 
@@ -44,12 +44,18 @@ tail -f /var/log/watchdog.log
 
 Reports can be sent out via email by modifying `config.json` and modifying the array as you see fit. For day of week, use (0-6) to denote Sunday-Saturday. For time, use military time format (e.g. 23:20 to indicate 11:20 PM or 00:00 to indicate midnight.
 
-## Additional Info
-
-### Enable SMTP access to a Gmail Account
+#### Enable SMTP access to a Gmail Account
 
 Create and use a free Gmail account to send your email alerts from. Learn more:
 
 * https://support.google.com/mail/answer/185833?hl=en
 
 * https://support.google.com/mail/answer/7126229?p=BadCredentials
+
+### UPS
+
+`watchdog` only supports CyberPower UPS hardware at present. The `pwrstat` utility must be installed and have the ability to detect your UPS.
+
+#### PowerPanel
+
+CyperPower's PowerPanel software also known as `pwrstat` can be installed by [visiting here](https://www.cyberpowersystems.com/product/software/power-panel-personal/powerpanel-for-linux/) and following the directions.

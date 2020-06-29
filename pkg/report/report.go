@@ -150,6 +150,30 @@ func generateReports() {
         }
     }
 
+    if config.Storage.Diagnostics.UPSTest {
+        // UPS status report
+        o, _, err := cli.RunCommand(`/usr/sbin/pwrstat -status | grep Result`)
+        if err != nil {
+            log.Println(err)
+            testResultSummary += fmt.Sprintf("\n%s\n", err)
+        }
+        scanner := bufio.NewScanner(&o)
+        if scanner.Scan() {
+            testResultSummary += fmt.Sprintf("\n\nUPS hardware: %s\n", strings.TrimSpace(scanner.Text()))
+        }
+
+        report += fmt.Sprintf("\n\n<h2>UPS Results</h2>\n\n")
+        o, _, err = cli.RunCommand(`/usr/sbin/pwrstat -status`)
+        if err != nil {
+            log.Println(err)
+            report += fmt.Sprintf("\n%s\n", err)
+        }
+        scanner = bufio.NewScanner(&o)
+        for scanner.Scan() {
+            report += fmt.Sprintf("%s\n", strings.TrimSpace(scanner.Text()))
+        }
+    }
+
     log.Println("[report] preparing to send report email...")
     subject := fmt.Sprintf("%s -- %s", config.Storage.ReportName, config.Storage.ServerName)
     body := header + "\n"

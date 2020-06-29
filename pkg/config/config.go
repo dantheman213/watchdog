@@ -20,6 +20,7 @@ type Schedule struct {
     Report *[]TimeItem
     SMARTTestShort *[]TimeItem
     SMARTTestLong *[]TimeItem
+    UPSTest *[]TimeItem
     ZFSTestScrub *[]TimeItem
 }
 
@@ -33,6 +34,7 @@ type Diagnostics struct {
     SMARTTestLong bool
     ZFSPoolScrub bool
     EmailReport bool
+    UPSTest bool
 }
 
 type Config struct {

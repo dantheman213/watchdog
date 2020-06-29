@@ -65,6 +65,12 @@
         "Time": "02:05"
       }
     ],
+    "UPSTest": [
+      {
+        "Day": 4,
+        "Time": "11:05"
+      }
+    ],
     "ZFSTestScrub": [
       {
         "Day": 3,
