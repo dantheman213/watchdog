@@ -60,7 +60,7 @@ func generateReports() {
             log.Fatal(err)
         }
 
-        report += "<h2>Test Details</h2>"
+        report += "<h2>Details</h2>"
         report += fmt.Sprintf("<h3>S.M.A.R.T Disk Results</h3>")
         for _, disk := range *disks {
             report += "<p>"
@@ -89,7 +89,7 @@ func generateReports() {
                 testResultSummary += fmt.Sprintf("Disk %s : <strong>%s</strong><br />", disk, result)
             }
 
-            report += fmt.Sprintf("Disk Path: %s<br />", disk)
+            report += fmt.Sprintf("Disk Path: <strong>%s</strong><br />", disk)
             o, _, err = cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -i %s | grep -e SMART -e Available -e "Model Family" -e "Device Model" -e "Serial Number"`, disk))
             if err != nil {
                 log.Println(err)
