@@ -180,8 +180,8 @@ func generateReports() {
     body := header + "\n"
     if config.Storage.Diagnostics.SMARTTestShort || config.Storage.Diagnostics.SMARTTestLong {
         body += testResultSummary + "\n"
-        body = fmt.Sprintf(`<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"></head><body bgcolor="#ffffff" text="#000000">%s</div></body></html>`, body)
     }
     body += report
-    sendEmail(config.Storage.EmailAccount.Address, subject, "text/html", body)
+    payload := fmt.Sprintf("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n<html>\n<head>\n<meta http-equiv=\"content-type\" content=\"text/html; charset=ISO-8859-1\">\n</head>\n<body bgcolor=\"#ffffff\" text=\"#000000\">\n%s\n</body>\n</html>\n", report)
+    sendEmail(config.Storage.EmailAccount.Address, subject, "text/html", payload)
 }
