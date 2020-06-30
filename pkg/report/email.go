@@ -7,11 +7,11 @@ import (
     "net/smtp"
 )
 
-func sendEmail(to, subject, body string) {
+func sendEmail(to, subject, mimeType, body string) {
     headerFrom := config.Storage.EmailAccount.Address
     headerTo := fmt.Sprintf("To: %s\n", to)
     headerSubject := fmt.Sprintf("Subject: %s\n", subject)
-    headerMIME := fmt.Sprintf(`MIME-version: 1.0;\nContent-Type: text/plain; charset="UTF-8";\n\n`)
+    headerMIME := fmt.Sprintf(`MIME-version: 1.0;\nContent-Type: %s; charset="UTF-8";\n\n`, mimeType)
     msg := fmt.Sprintf("%s%s%s%s\n%s", headerFrom, headerTo, headerSubject, headerMIME, body)
 
     err := smtp.SendMail(

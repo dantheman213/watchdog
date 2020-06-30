@@ -50,7 +50,7 @@ func startScheduler() {
 
 func generateReports() {
     log.Print("Generating Reports...")
-    header := fmt.Sprintf("<h1>%s</h1>\n<strong>%s</strong>\n\n", config.Storage.ReportName, config.Storage.ServerName)
+    header := fmt.Sprintf("<h1>%s</h1><p><strong>%s</strong></p>", config.Storage.ReportName, config.Storage.ServerName)
     report := ""
     testResultSummary := "<h2>Summary</h2>\n"
 
@@ -60,7 +60,8 @@ func generateReports() {
             log.Fatal(err)
         }
 
-        report += fmt.Sprintf("\n\n<h2>S.M.A.R.T Disk Results</h2>\n\n")
+        report += "<h2>Test Details</h2>"
+        report += fmt.Sprintf("<h3>S.M.A.R.T Disk Results</h3>")
         for _, disk := range *disks {
             log.Printf("[report] Gathering info on disk %s for report...", disk)
 
@@ -70,7 +71,7 @@ func generateReports() {
             o, _, err := cli.RunCommand(fmt.Sprintf(`smartctl -a %s | grep -e ": PASSED" -e ": FAILED"`, disk))
             if err != nil {
                 log.Println(err)
-                testResultSummary += fmt.Sprintf("\nDisk %s: ERROR %s\n\n", disk, err)
+                testResultSummary += fmt.Sprintf("<strong>Disk %s: ERROR %s</strong><br />", disk, err)
                 continue
             }
 
@@ -84,44 +85,44 @@ func generateReports() {
                 } else {
                     result = "UNKNOWN"
                 }
-                testResultSummary += fmt.Sprintf("Disk %s : %s\n", disk, result)
+                testResultSummary += fmt.Sprintf("<br />Disk %s : %s", disk, result)
             }
 
-            report += fmt.Sprintf("\n\nDisk Path: %s\n", disk)
+            report += fmt.Sprintf("<br />Disk Path: %s", disk)
             o, _, err = cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -i %s | grep -e SMART -e Available -e "Model Family" -e "Device Model" -e "Serial Number"`, disk))
             if err != nil {
                 log.Println(err)
-                report += fmt.Sprintf("\n%s\n", err)
+                report += fmt.Sprintf("<strong>%s</strong>", err)
                 continue
             }
 
             scanner = bufio.NewScanner(&o)
             for scanner.Scan() {
-                report += fmt.Sprintf("%s\n", strings.TrimSpace(scanner.Text()))
+                report += fmt.Sprintf("<br />%s", strings.TrimSpace(scanner.Text()))
             }
 
             o, _, err = cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -a %s | grep -e "test result" -e " PASS" -e " FAIL"`, disk))
             if err != nil {
                 log.Println(err)
-                report += fmt.Sprintf("\n%s\n", err)
+                report += fmt.Sprintf("<strong>%s</strong>", err)
                 continue
             }
 
             scanner = bufio.NewScanner(&o)
             for scanner.Scan() {
-                report += fmt.Sprintf("%s\n", strings.TrimSpace(scanner.Text()))
+                report += fmt.Sprintf("<br />%s", strings.TrimSpace(scanner.Text()))
             }
 
             o, _, err = cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -l selftest %s | grep -A 10 "=== START OF READ SMART DATA SECTION ==="`, disk))
             if err != nil {
                 log.Println(err)
-                report += fmt.Sprintf("\n%s\n", err)
+                report += fmt.Sprintf("<strong>%s</strong>", err)
                 continue
             }
 
             scanner = bufio.NewScanner(&o)
             for scanner.Scan() {
-                report += fmt.Sprintf("%s\n", strings.TrimSpace(scanner.Text()))
+                report += fmt.Sprintf("<br />%s", strings.TrimSpace(scanner.Text()))
             }
         }
     }
@@ -131,22 +132,22 @@ func generateReports() {
         o, _, err := cli.RunCommand(`/usr/sbin/zpool status -x`)
         if err != nil {
             log.Println(err)
-            testResultSummary += fmt.Sprintf("\n%s\n", err)
+            testResultSummary += fmt.Sprintf("<strong>%s</strong>", err)
         }
         scanner := bufio.NewScanner(&o)
         if scanner.Scan() {
-            testResultSummary += fmt.Sprintf("\n\nZFS pool(s): %s\n", strings.TrimSpace(scanner.Text()))
+            testResultSummary += fmt.Sprintf("<p>ZFS pool(s): %s</p>", strings.TrimSpace(scanner.Text()))
         }
 
-        report += fmt.Sprintf("\n\n<h2>ZFS Pool Results</h2>\n\n")
+        report += fmt.Sprintf("\n\n<h3>ZFS Pool Results</h3>\n\n")
         o, _, err = cli.RunCommand(`/usr/sbin/zpool status -v`)
         if err != nil {
             log.Println(err)
-            report += fmt.Sprintf("\n%s\n", err)
+            report += fmt.Sprintf("<strong>%s</strong>", err)
         }
         scanner = bufio.NewScanner(&o)
         for scanner.Scan() {
-            report += fmt.Sprintf("%s\n", strings.TrimSpace(scanner.Text()))
+            report += fmt.Sprintf("<br />%s", strings.TrimSpace(scanner.Text()))
         }
     }
 
@@ -155,22 +156,22 @@ func generateReports() {
         o, _, err := cli.RunCommand(`/usr/sbin/pwrstat -status | grep Result`)
         if err != nil {
             log.Println(err)
-            testResultSummary += fmt.Sprintf("\n%s\n", err)
+            testResultSummary += fmt.Sprintf("<strong>%s</strong>", err)
         }
         scanner := bufio.NewScanner(&o)
         if scanner.Scan() {
-            testResultSummary += fmt.Sprintf("\n\nUPS hardware: %s\n", strings.TrimSpace(scanner.Text()))
+            testResultSummary += fmt.Sprintf("<br />UPS hardware: %s", strings.TrimSpace(scanner.Text()))
         }
 
-        report += fmt.Sprintf("\n\n<h2>UPS Results</h2>\n\n")
+        report += fmt.Sprintf("\n\n<h3>UPS Results</h3>\n\n")
         o, _, err = cli.RunCommand(`/usr/sbin/pwrstat -status`)
         if err != nil {
             log.Println(err)
-            report += fmt.Sprintf("\n%s\n", err)
+            report += fmt.Sprintf("<strong>%s</strong>", err)
         }
         scanner = bufio.NewScanner(&o)
         for scanner.Scan() {
-            report += fmt.Sprintf("%s\n", strings.TrimSpace(scanner.Text()))
+            report += fmt.Sprintf("<br />%s", strings.TrimSpace(scanner.Text()))
         }
     }
 
@@ -179,7 +180,8 @@ func generateReports() {
     body := header + "\n"
     if config.Storage.Diagnostics.SMARTTestShort || config.Storage.Diagnostics.SMARTTestLong {
         body += testResultSummary + "\n"
+        body = fmt.Sprintf(`<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"></head><body bgcolor="#ffffff" text="#000000">%s</div></body></html>`, body)
     }
     body += report
-    sendEmail(config.Storage.EmailAccount.Address, subject, body)
+    sendEmail(config.Storage.EmailAccount.Address, subject, "text/html", body)
 }
