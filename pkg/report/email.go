@@ -8,7 +8,7 @@ import (
 )
 
 func sendEmail(to, subject, mimeType, body string) {
-    headerFrom := fmt.Sprintf("From: %s", config.Storage.EmailAccount.Address)
+    headerFrom := fmt.Sprintf("From: %s\n", config.Storage.EmailAccount.Address)
     headerSubject := fmt.Sprintf("Subject: %s\n", subject)
     headerTo := fmt.Sprintf("To: %s\n", to)
     headerMIME := "MIME-version: 1.0;\n"

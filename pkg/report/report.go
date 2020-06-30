@@ -50,7 +50,7 @@ func startScheduler() {
 
 func generateReports() {
     log.Print("Generating Reports...")
-    header := fmt.Sprintf("<h1>%s</h1><p><strong>%s</strong></p>", config.Storage.ReportName, config.Storage.ServerName)
+    header := fmt.Sprintf("<h1>%s</h1><p>Server: <strong>%s</strong></p>", config.Storage.ReportName, config.Storage.ServerName)
     report := ""
     testResultSummary := "<h2>Summary</h2>\n"
 
@@ -86,10 +86,10 @@ func generateReports() {
                 } else {
                     result = "UNKNOWN"
                 }
-                testResultSummary += fmt.Sprintf("<br />Disk %s : %s", disk, result)
+                testResultSummary += fmt.Sprintf("Disk %s : <strong>%s</strong><br />", disk, result)
             }
 
-            report += fmt.Sprintf("<br />Disk Path: %s", disk)
+            report += fmt.Sprintf("Disk Path: %s<br />", disk)
             o, _, err = cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -i %s | grep -e SMART -e Available -e "Model Family" -e "Device Model" -e "Serial Number"`, disk))
             if err != nil {
                 log.Println(err)
@@ -99,31 +99,31 @@ func generateReports() {
 
             scanner = bufio.NewScanner(&o)
             for scanner.Scan() {
-                report += fmt.Sprintf("<br />%s", strings.TrimSpace(scanner.Text()))
+                report += fmt.Sprintf("%s<br />", strings.TrimSpace(scanner.Text()))
             }
 
             o, _, err = cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -a %s | grep -e "test result" -e " PASS" -e " FAIL"`, disk))
             if err != nil {
                 log.Println(err)
-                report += fmt.Sprintf("<strong>%s</strong>", err)
+                report += fmt.Sprintf("<strong>%s</strong><br />", err)
                 continue
             }
 
             scanner = bufio.NewScanner(&o)
             for scanner.Scan() {
-                report += fmt.Sprintf("<br />%s", strings.TrimSpace(scanner.Text()))
+                report += fmt.Sprintf("%s<br />", strings.TrimSpace(scanner.Text()))
             }
 
             o, _, err = cli.RunCommand(fmt.Sprintf(`/usr/sbin/smartctl -l selftest %s | grep -A 10 "=== START OF READ SMART DATA SECTION ==="`, disk))
             if err != nil {
                 log.Println(err)
-                report += fmt.Sprintf("<strong>%s</strong>", err)
+                report += fmt.Sprintf("<strong>%s</strong><br />", err)
                 continue
             }
 
             scanner = bufio.NewScanner(&o)
             for scanner.Scan() {
-                report += fmt.Sprintf("<br />%s", strings.TrimSpace(scanner.Text()))
+                report += fmt.Sprintf("%s<br />", strings.TrimSpace(scanner.Text()))
             }
 
             report += "</p>"
@@ -136,22 +136,22 @@ func generateReports() {
         o, _, err := cli.RunCommand(`/usr/sbin/zpool status -x`)
         if err != nil {
             log.Println(err)
-            testResultSummary += fmt.Sprintf("<strong>%s</strong>", err)
+            testResultSummary += fmt.Sprintf("<strong>%s</strong><br />", err)
         }
         scanner := bufio.NewScanner(&o)
         if scanner.Scan() {
-            testResultSummary += fmt.Sprintf("<p>ZFS pool(s): %s</p>", strings.TrimSpace(scanner.Text()))
+            testResultSummary += fmt.Sprintf("<p>ZFS pool(s): <strong>%s</strong></p>", strings.TrimSpace(scanner.Text()))
         }
 
         report += fmt.Sprintf("\n\n<h3>ZFS Pool Results</h3>\n\n")
         o, _, err = cli.RunCommand(`/usr/sbin/zpool status -v`)
         if err != nil {
             log.Println(err)
-            report += fmt.Sprintf("<strong>%s</strong>", err)
+            report += fmt.Sprintf("<strong>%s</strong><br />", err)
         }
         scanner = bufio.NewScanner(&o)
         for scanner.Scan() {
-            report += fmt.Sprintf("<br />%s", strings.TrimSpace(scanner.Text()))
+            report += fmt.Sprintf("%s<br />", strings.TrimSpace(scanner.Text()))
         }
         report += "</p>"
     }
@@ -162,11 +162,11 @@ func generateReports() {
         o, _, err := cli.RunCommand(`/usr/sbin/pwrstat -status | grep Result`)
         if err != nil {
             log.Println(err)
-            testResultSummary += fmt.Sprintf("<strong>%s</strong>", err)
+            testResultSummary += fmt.Sprintf("<strong>%s</strong><br />", err)
         }
         scanner := bufio.NewScanner(&o)
         if scanner.Scan() {
-            testResultSummary += fmt.Sprintf("<br />UPS hardware: %s", strings.TrimSpace(scanner.Text()))
+            testResultSummary += fmt.Sprintf("UPS hardware: <strong>%s</strong><br />", strings.TrimSpace(scanner.Text()))
         }
 
         report += fmt.Sprintf("\n\n<h3>UPS Results</h3>\n\n")
