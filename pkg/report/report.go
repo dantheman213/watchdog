@@ -169,15 +169,15 @@ func generateReports() {
             testResultSummary += fmt.Sprintf("UPS hardware: <strong>%s</strong><br />", strings.TrimSpace(scanner.Text()))
         }
 
-        report += fmt.Sprintf("\n\n<h3>UPS Results</h3>\n\n")
+        report += fmt.Sprintf("<h3>UPS Results</h3>")
         o, _, err = cli.RunCommand(`/usr/sbin/pwrstat -status`)
         if err != nil {
             log.Println(err)
-            report += fmt.Sprintf("<strong>%s</strong>", err)
+            report += fmt.Sprintf("<strong>%s</strong><br />", err)
         }
         scanner = bufio.NewScanner(&o)
         for scanner.Scan() {
-            report += fmt.Sprintf("<br />%s", strings.TrimSpace(scanner.Text()))
+            report += fmt.Sprintf("%s<br />", strings.TrimSpace(scanner.Text()))
         }
         report += "</p>"
     }
