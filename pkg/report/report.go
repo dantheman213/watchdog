@@ -63,6 +63,7 @@ func generateReports() {
         report += "<h2>Test Details</h2>"
         report += fmt.Sprintf("<h3>S.M.A.R.T Disk Results</h3>")
         for _, disk := range *disks {
+            report += "<p>"
             log.Printf("[report] Gathering info on disk %s for report...", disk)
 
             // S.M.A.R.T reports
@@ -124,10 +125,13 @@ func generateReports() {
             for scanner.Scan() {
                 report += fmt.Sprintf("<br />%s", strings.TrimSpace(scanner.Text()))
             }
+
+            report += "</p>"
         }
     }
 
     if config.Storage.Diagnostics.ZFSPoolScrub {
+        report += "<p>"
         // ZFS pool report
         o, _, err := cli.RunCommand(`/usr/sbin/zpool status -x`)
         if err != nil {
@@ -149,9 +153,11 @@ func generateReports() {
         for scanner.Scan() {
             report += fmt.Sprintf("<br />%s", strings.TrimSpace(scanner.Text()))
         }
+        report += "</p>"
     }
 
     if config.Storage.Diagnostics.UPSTest {
+        report += "<p>"
         // UPS status report
         o, _, err := cli.RunCommand(`/usr/sbin/pwrstat -status | grep Result`)
         if err != nil {
@@ -173,6 +179,7 @@ func generateReports() {
         for scanner.Scan() {
             report += fmt.Sprintf("<br />%s", strings.TrimSpace(scanner.Text()))
         }
+        report += "</p>"
     }
 
     log.Println("[report] preparing to send report email...")
@@ -182,6 +189,6 @@ func generateReports() {
         body += testResultSummary + "\n"
     }
     body += report
-    payload := fmt.Sprintf("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n<html>\n<head>\n<meta http-equiv=\"content-type\" content=\"text/html; charset=ISO-8859-1\">\n</head>\n<body bgcolor=\"#ffffff\" text=\"#000000\">\n%s\n</body>\n</html>\n", report)
+    payload := fmt.Sprintf("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n<html>\n<head>\n<meta http-equiv=\"content-type\" content=\"text/html; charset=ISO-8859-1\">\n</head>\n<body bgcolor=\"#ffffff\" text=\"#000000\">\n%s\n</body>\n</html>\n", body)
     sendEmail(config.Storage.EmailAccount.Address, subject, "text/html", payload)
 }
